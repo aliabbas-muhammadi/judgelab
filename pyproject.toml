@@ -1,0 +1,53 @@
+[project]
+name = "judgelab"
+version = "0.1.0"
+description = "A reproducibility-first lab for auditing LLM-as-a-judge reliability."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "LicenseRef-Proprietary" }
+authors = [{ name = "Ali Muhammadi" }]
+dependencies = [
+    "pydantic>=2",
+    "typer>=0.12",
+]
+
+[project.scripts]
+judgelab = "judgelab.cli:app"
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/judgelab"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# Deliberately omit flake8-type-checking (TC): it moves imports under
+# TYPE_CHECKING, which breaks Pydantic v2's runtime annotation evaluation.
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
