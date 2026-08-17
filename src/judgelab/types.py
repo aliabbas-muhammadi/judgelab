@@ -2,8 +2,9 @@
 
 This module defines the *config / input* side of the data model — the entities
 an experiment is defined over (examples, candidate responses, judges) and the
-experiment configuration itself. Result-side entities (runs, trials, decisions,
-metrics, reliability cards) are added in a later contribution.
+experiment configuration itself, plus the result-side entities an experiment
+produces (judge outputs, trials, runs, human labels). Report-side aggregates
+(agreement metrics, reliability cards) arrive when the stats layer lands.
 
 Every model is frozen and rejects unknown fields, so a typo in a config file
 fails loudly rather than being silently ignored. Enums are string-valued so they
@@ -13,6 +14,7 @@ serialise stably into the canonical JSON used for experiment fingerprinting.
 from __future__ import annotations
 
 import enum
+from datetime import datetime
 from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -133,13 +135,117 @@ class ExperimentConfig(_Frozen):
         return value.lower()
 
 
+class Usage(_Frozen):
+    """Token usage reported by a provider, when available."""
+
+    prompt_tokens: int | None = Field(default=None, ge=0)
+    completion_tokens: int | None = Field(default=None, ge=0)
+
+
+class PairwiseChoice(enum.StrEnum):
+    """Which presented slot a pairwise judgement preferred (A = first, B = second)."""
+
+    A = "A"
+    B = "B"
+    TIE = "tie"
+
+
+class RunStatus(enum.StrEnum):
+    """Lifecycle state of an evaluation run."""
+
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETE = "complete"
+
+
+class JudgeOutput(_Frozen):
+    """A judge's normalised result for a single judgement.
+
+    Parse failures and provider errors are recorded as data, never silently
+    dropped: a failed output carries ``parse_error`` / ``error`` and no verdict,
+    so refusal and parse-failure rates remain measurable.
+    """
+
+    raw_text: str | None = None
+    pairwise_choice: PairwiseChoice | None = None
+    pointwise_score: float | None = None
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+    parse_error: bool = False
+    error: str | None = None
+    usage: Usage = Field(default_factory=Usage)
+    latency_ms: float | None = Field(default=None, ge=0.0)
+
+    @model_validator(mode="after")
+    def _failed_output_has_no_verdict(self) -> Self:
+        failed = self.parse_error or self.error is not None
+        has_verdict = self.pairwise_choice is not None or self.pointwise_score is not None
+        if failed and has_verdict:
+            raise ValueError("a failed judge output must not also carry a verdict")
+        return self
+
+
+class Trial(_Frozen):
+    """One judgement: a single example judged under one presentation order and repeat.
+
+    ``order`` is the candidate ids in the order they were presented to the judge,
+    so a pairwise slot choice (A/B) can be mapped back to a candidate and position
+    bias measured. ``request_hash`` keys idempotent, resumable persistence.
+    """
+
+    run_fingerprint: str = Field(min_length=1)
+    example_id: str = Field(min_length=1)
+    repeat_index: int = Field(ge=0)
+    order: tuple[str, ...] = Field(min_length=1)
+    request_hash: str = Field(min_length=1)
+    output: JudgeOutput
+    created_at: datetime | None = None
+
+
+class EvaluationRun(_Frozen):
+    """Metadata for one experiment run.
+
+    Its identity is ``fingerprint(config)``, computed by the store rather than
+    stored redundantly here so the two can never disagree.
+    """
+
+    config: ExperimentConfig
+    n_examples: int = Field(ge=0)
+    status: RunStatus = RunStatus.PENDING
+    created_at: datetime | None = None
+
+
+class HumanLabel(_Frozen):
+    """A human annotator's judgement on one example (ground truth for agreement)."""
+
+    example_id: str = Field(min_length=1)
+    annotator_id: str = Field(min_length=1)
+    pairwise_choice: PairwiseChoice | None = None
+    pointwise_score: float | None = None
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+
+    @model_validator(mode="after")
+    def _exactly_one_verdict(self) -> Self:
+        has_pair = self.pairwise_choice is not None
+        has_point = self.pointwise_score is not None
+        if has_pair == has_point:
+            raise ValueError("HumanLabel needs exactly one of pairwise_choice or pointwise_score")
+        return self
+
+
 __all__ = [
     "CandidateResponse",
+    "EvaluationRun",
     "Example",
     "ExperimentConfig",
+    "HumanLabel",
     "Judge",
+    "JudgeOutput",
     "JudgeVersion",
+    "PairwiseChoice",
     "Protocol",
+    "RunStatus",
     "SamplingParams",
     "TaskType",
+    "Trial",
+    "Usage",
 ]
