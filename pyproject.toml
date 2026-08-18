@@ -20,6 +20,7 @@ dev = [
     "mypy",
     "pytest",
     "pytest-cov",
+    "scikit-learn", # test-only: independent cross-check for the agreement statistics
 ]
 
 [build-system]
