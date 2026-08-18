@@ -9,6 +9,7 @@ authors = [{ name = "Ali Muhammadi" }]
 dependencies = [
     "pydantic>=2",
     "typer>=0.12",
+    "numpy>=2",
 ]
 
 [project.scripts]
