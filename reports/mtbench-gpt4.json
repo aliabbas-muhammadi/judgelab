@@ -1,0 +1,36 @@
+{
+  "by_turn": {
+    "1": {
+      "cohen_kappa": 0.5158,
+      "kappa_ci_high": 0.5608,
+      "kappa_ci_low": 0.467,
+      "n": 910,
+      "raw_agreement": 0.678
+    },
+    "2": {
+      "cohen_kappa": 0.4922,
+      "kappa_ci_high": 0.5391,
+      "kappa_ci_low": 0.4461,
+      "n": 904,
+      "raw_agreement": 0.6659
+    }
+  },
+  "n_comparisons": 1814,
+  "n_gpt4_verdicts": 2400,
+  "n_human_votes": 3355,
+  "position_inconsistency_rate": 0.1599,
+  "ties_excluded": {
+    "cohen_kappa": 0.767,
+    "kappa_ci_high": 0.8045,
+    "kappa_ci_low": 0.7258,
+    "n": 1078,
+    "raw_agreement": 0.884
+  },
+  "with_ties": {
+    "cohen_kappa": 0.5047,
+    "kappa_ci_high": 0.5378,
+    "kappa_ci_low": 0.4719,
+    "n": 1814,
+    "raw_agreement": 0.672
+  }
+}
