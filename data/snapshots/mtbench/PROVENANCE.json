@@ -1,0 +1,21 @@
+{
+  "changes": "kept label/key columns only; embedded conversations dropped; rows sorted",
+  "citation": "Zheng et al. 2023, Judging LLM-as-a-Judge, arXiv:2306.05685",
+  "config": "default",
+  "dataset": "lmsys/mt_bench_human_judgments",
+  "files": {
+    "gpt4_pair.jsonl": {
+      "rows": 2400,
+      "sha256": "ef1d3c8d0eb9824cd9ecdd50a4d5690f0c05382148a24801128cb5facb121238"
+    },
+    "human.jsonl": {
+      "rows": 3355,
+      "sha256": "7ae1ff9ad4a01c30936342dd5494493da9a7fe6538265df1f4c04d44e76fa5f3"
+    }
+  },
+  "license": "CC-BY-4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "retrieved": "2026-08-18",
+  "revision": "f7d2896d2cc5d80f8b55c2bbc722613555233c25",
+  "source": "https://huggingface.co/datasets/lmsys/mt_bench_human_judgments"
+}

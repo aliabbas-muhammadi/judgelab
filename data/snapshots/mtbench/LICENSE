@@ -1,0 +1,21 @@
+MT-Bench human & GPT-4 judgments — data attribution
+====================================================
+
+The data files in this directory (`human.jsonl`, `gpt4_pair.jsonl`) are a
+reformatted subset of the dataset:
+
+    lmsys/mt_bench_human_judgments
+    https://huggingface.co/datasets/lmsys/mt_bench_human_judgments
+
+Copyright (c) LMSYS Org. Created by Zheng et al. (2023),
+"Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena", arXiv:2306.05685.
+
+Licensed under the Creative Commons Attribution 4.0 International License
+(CC-BY-4.0): https://creativecommons.org/licenses/by/4.0/
+
+Changes made: only the label/key columns were kept
+(`question_id`, `model_a`, `model_b`, `winner`, `judge`, `turn`); the embedded
+conversation texts were dropped; rows were sorted for a deterministic snapshot.
+
+This data license (CC-BY-4.0) applies ONLY to the files in this directory. The
+judgelab source code is licensed separately (see the repository LICENSE).
