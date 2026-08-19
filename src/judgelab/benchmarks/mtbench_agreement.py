@@ -24,7 +24,7 @@ from collections import Counter, defaultdict
 from pydantic import BaseModel, ConfigDict
 
 from judgelab.datasets.mtbench import MtbenchSnapshot, MtbenchVote, MtbenchWinner
-from judgelab.stats import bootstrap_ci, cohen_kappa, raw_agreement
+from judgelab.stats import bootstrap_ci, cohen_kappa, krippendorff_alpha, raw_agreement
 
 _ROUND = 4
 
@@ -88,6 +88,11 @@ class AgreementResult(BaseModel):
     n_human_votes: int
     n_gpt4_verdicts: int
     position_inconsistency_rate: float
+    # The human-human agreement ceiling: how much annotators agree with each other
+    # (Krippendorff's alpha over the multiply-annotated comparisons). Contextualises
+    # the judge-human numbers — a judge cannot be more reliable than the humans are.
+    human_krippendorff_alpha: float
+    n_human_multi_rated: int
     with_ties: Metric
     ties_excluded: Metric
     by_turn: dict[int, Metric]
@@ -144,6 +149,10 @@ def compute_agreement(
     turns: list[int] = [key[2] for key in keys]
     inconsistency = [gpt4_inconsistent[key] for key in keys]
 
+    human_units = [human_by_key[key] for key in keys]
+    n_multi_rated = sum(1 for unit in human_units if len(unit) >= 2)
+    human_alpha = krippendorff_alpha(human_units) if n_multi_rated > 0 else math.nan
+
     decisive = [
         (h, g)
         for h, g in zip(human, gpt4, strict=True)
@@ -160,6 +169,8 @@ def compute_agreement(
         n_human_votes=len(snapshot.human),
         n_gpt4_verdicts=len(snapshot.gpt4_pair),
         position_inconsistency_rate=_round(sum(inconsistency) / len(inconsistency)),
+        human_krippendorff_alpha=_round(human_alpha),
+        n_human_multi_rated=n_multi_rated,
         with_ties=_metric(human, gpt4, n_resamples=n_resamples, seed=seed, confidence=confidence),
         ties_excluded=_metric(
             [h for h, _ in decisive],

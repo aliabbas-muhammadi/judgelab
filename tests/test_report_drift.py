@@ -30,3 +30,5 @@ def test_committed_json_headline_numbers() -> None:
     assert data["ties_excluded"]["cohen_kappa"] == 0.767
     assert data["with_ties"]["cohen_kappa"] == 0.5047
     assert data["position_inconsistency_rate"] == 0.1599
+    assert data["human_krippendorff_alpha"] == 0.4855  # human-human agreement ceiling
+    assert data["n_human_multi_rated"] == 961

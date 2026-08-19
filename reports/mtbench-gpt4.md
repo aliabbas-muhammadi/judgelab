@@ -5,6 +5,7 @@ extended with chance-corrected Cohen's kappa and bootstrap 95% confidence interv
 
 - **Comparisons:** 1814 (from 3355 human votes, 2400 GPT-4 verdicts)
 - **Position-inconsistency rate** (GPT-4 verdict flipped between orderings): 0.160
+- **Human-human agreement ceiling** (Krippendorff's α over 961 multiply-annotated comparisons): 0.485
 
 | Setup | n | Raw agreement | Cohen's κ | κ 95% CI |
 | --- | --- | --- | --- | --- |
@@ -22,5 +23,6 @@ extended with chance-corrected Cohen's kappa and bootstrap 95% confidence interv
 
 - Raw agreement overstates reliability: chance-corrected κ is markedly lower (S2: 0.884 raw vs 0.767 κ). Report κ, not raw agreement.
 - Verdicts are aligned by model identity in a canonical ordering (order-invariant); human annotators are combined by majority vote; GPT-4 `tie (inconsistent)` counts as a tie and is surfaced as the position-inconsistency rate.
+- The judge sits near the human ceiling: with ties, GPT-4↔human κ = 0.505 vs human↔human α = 0.485 — GPT-4 agrees with humans about as well as humans agree with each other. A judge is not more reliable than its reference.
 - S1 keeps ties; S2 excludes them (either side a tie), following the paper's two setups.
 - Reproduce (keyless, no API calls): `judgelab report` — computed from the committed CC-BY-4.0 snapshot with seed 0 and 2000 bootstrap resamples. CI runs `judgelab report --check` as a drift gate.

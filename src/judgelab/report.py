@@ -52,6 +52,9 @@ def render_markdown(result: AgreementResult) -> str:
         f"(from {result.n_human_votes} human votes, {result.n_gpt4_verdicts} GPT-4 verdicts)",
         f"- **Position-inconsistency rate** (GPT-4 verdict flipped between orderings): "
         f"{_fmt(result.position_inconsistency_rate)}",
+        f"- **Human-human agreement ceiling** (Krippendorff's α over "
+        f"{result.n_human_multi_rated} multiply-annotated comparisons): "
+        f"{_fmt(result.human_krippendorff_alpha)}",
         "",
         "| Setup | n | Raw agreement | Cohen's κ | κ 95% CI |",
         "| --- | --- | --- | --- | --- |",
@@ -72,6 +75,10 @@ def render_markdown(result: AgreementResult) -> str:
         "- Verdicts are aligned by model identity in a canonical ordering (order-invariant); "
         "human annotators are combined by majority vote; GPT-4 `tie (inconsistent)` counts as a "
         "tie and is surfaced as the position-inconsistency rate.",
+        f"- The judge sits near the human ceiling: with ties, GPT-4↔human κ = "
+        f"{_fmt(result.with_ties.cohen_kappa)} vs human↔human α = "
+        f"{_fmt(result.human_krippendorff_alpha)} — GPT-4 agrees with humans about as well as "
+        f"humans agree with each other. A judge is not more reliable than its reference.",
         "- S1 keeps ties; S2 excludes them (either side a tie), following the paper's two setups.",
         f"- Reproduce (keyless, no API calls): `judgelab report` — computed from the committed "
         f"CC-BY-4.0 snapshot with seed {REPORT_SEED} and {REPORT_RESAMPLES} bootstrap resamples. "
