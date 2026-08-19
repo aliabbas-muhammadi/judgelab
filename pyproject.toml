@@ -23,6 +23,7 @@ dev = [
     "pytest",
     "pytest-cov",
     "scikit-learn", # test-only: independent cross-check for the agreement statistics
+    "krippendorff", # test-only: independent cross-check for Krippendorff's alpha
 ]
 
 [build-system]
