@@ -1,0 +1,13 @@
+judgelab
+
+Copyright (c) 2026 Ali Muhammadi.
+Source code is licensed under the MIT License (see LICENSE).
+
+This project redistributes third-party data under its own, different terms:
+
+- data/snapshots/mtbench/ is a reformatted subset of
+  lmsys/mt_bench_human_judgments (© LMSYS Org / Zheng et al. 2023,
+  arXiv:2306.05685), licensed under CC-BY-4.0. See that directory's LICENSE
+  and PROVENANCE.json for attribution and provenance.
+
+The MIT License covers the source code only; it does not relicense the data.
