@@ -15,8 +15,10 @@
       "raw_agreement": 0.6659
     }
   },
+  "human_krippendorff_alpha": 0.4855,
   "n_comparisons": 1814,
   "n_gpt4_verdicts": 2400,
+  "n_human_multi_rated": 961,
   "n_human_votes": 3355,
   "position_inconsistency_rate": 0.1599,
   "ties_excluded": {

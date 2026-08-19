@@ -42,6 +42,8 @@ src = ["src", "tests"]
 # Deliberately omit flake8-type-checking (TC): it moves imports under
 # TYPE_CHECKING, which breaks Pydantic v2's runtime annotation evaluation.
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# Greek statistical notation is intentional (alpha, kappa); not a typo of ASCII.
+allowed-confusables = ["α"]
 
 [tool.mypy]
 python_version = "3.12"
