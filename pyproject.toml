@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "A reproducibility-first lab for auditing LLM-as-a-judge reliability."
 readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "LicenseRef-Proprietary" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Ali Muhammadi" }]
 dependencies = [
     "pydantic>=2",
